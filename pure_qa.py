@@ -10,7 +10,7 @@ import query as q
 query = "資工系女生多嗎？"
 
 
-llm = OpenAI(openai_api_key="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")
+llm = OpenAI(openai_api_key="")
 
 query_cons = q.multiple_filter(query)
 q.data_cleaner(query_cons)
@@ -32,7 +32,7 @@ vectorstore = Chroma.from_documents(documents, embeddings)
 
 from langchain.chains.question_answering import load_qa_chain
 
-chain = load_qa_chain(llm, chain_type= "stuff")
+chain = load_qa_chain(llm, chain_type= "stuff") # using "stuff" to do question answering with sources 
 
 docs = vectorstore.similarity_search(query)
 a=chain.run(input_documents=docs, question=query)

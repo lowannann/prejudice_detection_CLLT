@@ -11,15 +11,6 @@ from langchain.chains import ConversationChain
 from langchain.chains.conversation.memory import ConversationEntityMemory
 # from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
 from prompt import TEMPLATE_MADE_WITH_LOVE_BY_RAY
-
-import query as q
-from langchain.document_loaders.csv_loader import CSVLoader
-from langchain.chains.summarize import load_summarize_chain
-from langchain.document_loaders import TextLoader
-
-
-
-
 # 設定 OpenAI API Key
 os.environ["OPENAI_API_KEY"] = apikey
 API = apikey
@@ -69,8 +60,6 @@ with st.sidebar.expander("選擇 Model ", expanded=False):
         ],
     )
 st.sidebar.button("New Chat", on_click=new_chat)
-
-
 # Prompt templates
 title_template = PromptTemplate(input_variables=["topic"], template="告訴我有關台大{topic}的資訊")
 # 創造另外多個 prompt templates
@@ -87,41 +76,21 @@ llm = OpenAI(
 )
 if "entity_memory" not in st.session_state:
     st.session_state.entity_memory = ConversationEntityMemory(llm=llm)
-    
 Conversation = ConversationChain(
     llm=llm,
     prompt=TEMPLATE_MADE_WITH_LOVE_BY_RAY,
     memory=st.session_state.entity_memory,
     verbose=True,
 )
-
-
 # 使用者輸入
 user_input = get_text()
 if user_input:
-    r = q.multiple_filter(user_input)
-    q.data_cleaner(r)
-    input_file = 'NTU_library.csv'  # 輸入的CSV檔案名稱
-    output_file = 'NTU_library.txt'  # 輸出的TXT檔案名稱
-
-    q.merge_page_content(input_file, output_file)
-    loader = TextLoader('NTU_library.txt')
-    data = loader.load()
-    chain = load_summarize_chain(llm, chain_type='map_reduce', verbose=True)
-    output2 = chain.run(data)
-
     # title = title_chain.run(topic = user_input)
     # script = script_chain.run(title=title)
     # chain = chain.run
-
     output = Conversation.run(input=user_input)
-    output()
     st.session_state.past.append(user_input)
-    #st.session_state.generated.append(output)
     st.session_state.generated.append(output)
-
-
-
     # st.write(title)
     # st.write(script)
 # 讓使用者可以下載聊天紀錄
