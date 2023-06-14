@@ -6,11 +6,14 @@ from langchain.llms import OpenAI
 from langchain.document_loaders import TextLoader
 import query as q
 #from langchain.vectorstores import FAISS
+from prompt_template import PROMPT
+from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 
-query = "資工系女生多嗎？"
+
+query = "2023年台大學生對女生讀資工系的看法？"
 
 
-llm = OpenAI(openai_api_key="")
+llm = OpenAI(openai_api_key="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")
 
 query_cons = q.multiple_filter(query)
 q.data_cleaner(query_cons)
@@ -32,8 +35,8 @@ vectorstore = Chroma.from_documents(documents, embeddings)
 
 from langchain.chains.question_answering import load_qa_chain
 
-chain = load_qa_chain(llm, chain_type= "stuff") # using "stuff" to do question answering with sources 
+chain = load_qa_with_sources_chain(llm, chain_type= "stuff", prompt=PROMPT, verbose=True) # using "stuff" to do question answering with sources 
 
 docs = vectorstore.similarity_search(query)
-a=chain.run(input_documents=docs, question=query)
+a=chain({"input_documents":docs,"question":query},return_only_outputs=True)
 print(a)

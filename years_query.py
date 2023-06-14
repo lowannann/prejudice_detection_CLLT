@@ -4,7 +4,7 @@ from pprint import pprint
 import os
 import weaviate
 from langchain.retrievers.weaviate_hybrid_search import WeaviateHybridSearchRetriever
-import json
+#import json
 import csv
 
 @dataclass
@@ -24,7 +24,7 @@ class ContentItem:
 
 
 os.environ['WEAVIATE_ADMIN_PASS'] = "weaviate-ultimate-forever-pass"
-os.environ['OPENAI_API_KEY'] = "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"
+os.environ['OPENAI_API_KEY'] = "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"
 
 client = weaviate.Client(
     url="http://140.112.147.128:8000",
@@ -45,18 +45,63 @@ retriever = WeaviateHybridSearchRetriever(
     attributes=attributes,  # include these attributes in the 'metadata' field of the search results
 )
 
-
-def one_filter(keyword):
+def y2020_filter(keyword):
     where_filter = {
-        "path": ["author"],
-        "operator": "Equal",
-        "valueString": "peterW"
+        "operator": "And",  # And or Or
+        "operands": [  # use operands for multiple filters
+            {"path": ["content_type"], "operator": "Equal", "valueString": "comment"},
+            {"path": ["rating"], "operator": "Equal", "valueString": "pos"},
+            {"path": ["author"], "operator": "NotEqual", "valueString": "peterW"},
+            {"path": ["year"], "operator":"Equal", "valueString":"2020"}
+        ],
     }
     r = retriever.get_relevant_documents(keyword, where_filter=where_filter)
     pprint(r)
     return r
 
-def multiple_filter(keyword):
+def y2021_filter(keyword):
+    where_filter = {
+        "operator": "And",  # And or Or
+        "operands": [  # use operands for multiple filters
+            {"path": ["content_type"], "operator": "Equal", "valueString": "comment"},
+            {"path": ["rating"], "operator": "Equal", "valueString": "pos"},
+            {"path": ["author"], "operator": "NotEqual", "valueString": "peterW"},
+            {"path": ["year"], "operator":"Equal", "valueString":"2021"}
+        ],
+    }
+    r = retriever.get_relevant_documents(keyword, where_filter=where_filter)
+    pprint(r)
+    return r
+
+def y2022_filter(keyword):
+    where_filter = {
+        "operator": "And",  # And or Or
+        "operands": [  # use operands for multiple filters
+            {"path": ["content_type"], "operator": "Equal", "valueString": "comment"},
+            {"path": ["rating"], "operator": "Equal", "valueString": "pos"},
+            {"path": ["author"], "operator": "NotEqual", "valueString": "peterW"},
+            {"path": ["year"], "operator":"Equal", "valueString":"2022"}
+        ],
+    }
+    r = retriever.get_relevant_documents(keyword, where_filter=where_filter)
+    pprint(r)
+    return r
+
+def y2023_filter(keyword):
+    where_filter = {
+        "operator": "And",  # And or Or
+        "operands": [  # use operands for multiple filters
+            {"path": ["content_type"], "operator": "Equal", "valueString": "comment"},
+            {"path": ["rating"], "operator": "Equal", "valueString": "pos"},
+            {"path": ["author"], "operator": "NotEqual", "valueString": "peterW"},
+            {"path": ["year"], "operator":"Equal", "valueString":"2023"}
+        ],
+    }
+    r = retriever.get_relevant_documents(keyword, where_filter=where_filter)
+    pprint(r)
+    return r
+
+def y2020to2023_filter(keyword):
     where_filter = {
         "operator": "And",  # And or Or
         "operands": [  # use operands for multiple filters
@@ -84,8 +129,8 @@ def data_cleaner(r):
             else:
                 result[doc.metadata['post_id']] = doc.page_content
 
-    with open("NTU_library.json","w") as json_file:
-        json.dump(result, json_file)
+#    with open("NTU_library.json","w") as json_file:
+#        json.dump(result, json_file)
 
     with open("NTU_library.csv", "w", newline='') as csv_file:
         writer = csv.writer(csv_file)
@@ -111,4 +156,3 @@ def merge_page_content(input_file, output_file):
     with open(output_file, 'w') as txt_file:
         for content in merged_content:
             txt_file.write(f"{content}\n")
-

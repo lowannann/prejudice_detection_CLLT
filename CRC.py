@@ -9,7 +9,7 @@ import query as q
 query = "台大資工系的男女比例"
 
 
-llm = OpenAI(openai_api_key="")
+llm = OpenAI(openai_api_key="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")
 
 query_cons = q.multiple_filter(query)
 q.data_cleaner(query_cons)
