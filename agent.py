@@ -11,7 +11,7 @@ from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOut
 
 
 
-llm = OpenAI(openai_api_key="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",temperature=0)
+llm = OpenAI(openai_api_key="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",temperature=0)
 
 llm_chain = LLMChain(llm=llm, prompt=prompt_with_history) #NEW_ADDED
 
@@ -24,13 +24,13 @@ agent = LLMSingleActionAgent(
     output_parser=output_parser,
     stop=["\nObservation:"], 
     allowed_tools=tool_names
-) #NEW_ADDED
+) 
 
 from langchain.memory import ConversationBufferWindowMemory
 memory=ConversationBufferWindowMemory(k=2)
 
-agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory) #NEW_ADDED
-agent_executor.run("台大學生對女生讀資工系的看法如何？") #NEW_ADDED
+agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory) 
+agent_executor.run("台大學生對女生讀資工系的看法如何？") 
 
 
 

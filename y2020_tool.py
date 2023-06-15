@@ -7,7 +7,7 @@ from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI
 
 
-llm = OpenAI(openai_api_key="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")
+llm = OpenAI(openai_api_key="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")
 
 def y2020_search(query):
     y2020_cons = yq.y2020_filter(query)

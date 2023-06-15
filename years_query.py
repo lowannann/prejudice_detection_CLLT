@@ -24,7 +24,7 @@ class ContentItem:
 
 
 os.environ['WEAVIATE_ADMIN_PASS'] = "weaviate-ultimate-forever-pass"
-os.environ['OPENAI_API_KEY'] = "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"
+os.environ['OPENAI_API_KEY'] = "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"
 
 client = weaviate.Client(
     url="http://140.112.147.128:8000",
